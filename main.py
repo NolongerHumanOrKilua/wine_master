@@ -1,6 +1,7 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import datetime
 import pandas
+import collections
 from pprint import pprint
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -29,19 +30,16 @@ else:
 
 excel_data_df = pandas.read_excel('wine2.xlsx', sheet_name='Лист1', na_values='nan', keep_default_na=False, usecols=['Категория', 'Название', 'Сорт', 'Цена', 'Картинка'])
 drinks = excel_data_df.to_dict(orient='records')
-print(drinks)
-for drink in drinks:
-    if drink['Категория'] == "Белые вина":
-        white_wines.append(drink)
-    elif drink['Категория'] == "Красные вина":
-        red_wines.append(drink)
-    else:
-        another_drink.append(drink)
-list["Белые вина"] = white_wines
-list["Красные вина"] = red_wines
-list["Напитки"] = another_drink
 
-pprint(list)                       
+dict_of_lists = collections.defaultdict(list) 
+
+
+for drink in drinks:
+    dict_of_lists[drink["Категория"]].append(drink)
+
+pprint(dict_of_lists)    
+
+                 
 
 
 
