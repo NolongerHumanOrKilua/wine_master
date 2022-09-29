@@ -1,5 +1,6 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import datetime
+
 import pandas
 import collections
 from pprint import pprint
@@ -12,10 +13,7 @@ env = Environment(
 
 template = env.get_template('template.html')
 
-list = {}
-white_wines = []
-red_wines = []
-another_drink = []
+
 event1 = datetime.datetime(year=1920, month=1, day=1, hour=0)
 event2 = datetime.datetime.now()
 delta = event2.year-event1.year
@@ -28,18 +26,16 @@ elif delta % 10 == 1:
 else:
     years = "лет"
 
-excel_data_df = pandas.read_excel('wine2.xlsx', sheet_name='Лист1', na_values='nan', keep_default_na=False, usecols=['Категория', 'Название', 'Сорт', 'Цена', 'Картинка'])
+excel_data_df = pandas.read_excel('wine3.xlsx', sheet_name='Лист1', na_values='nan', keep_default_na=False, usecols=['Категория', 'Название', 'Сорт', 'Цена', 'Картинка', "Акция"])
 drinks = excel_data_df.to_dict(orient='records')
 
 dict_of_lists = collections.defaultdict(list) 
 
-
 for drink in drinks:
     dict_of_lists[drink["Категория"]].append(drink)
 
-pprint(dict_of_lists)    
+wines = dict_of_lists.items()
 
-                 
 
 
 
@@ -47,7 +43,7 @@ pprint(dict_of_lists)
 rendered_page = template.render(
     number_of_years=years,
     year=delta,
-    caps=list,
+    wines=wines,
 )
 
 with open('index.html', 'w', encoding="utf8") as file:
